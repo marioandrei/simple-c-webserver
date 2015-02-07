@@ -4,6 +4,31 @@
 
 #define MAXIMUM_NUMBER_OF_CONNECTIONS 64
 #define MAX_SIZE_BUFFER 255
+#define MAX_SIZE_STR_LENGTH 255
+
+//#define DEBUG
+
+/* define the type filetype */
+
+typedef struct _FILETYPES{
+	char *ext;
+	char *filetype;
+} filetype;
+
+filetype extensions [] = {
+	{"gif", "image/gif" },  
+	{"jpg", "image/jpeg"}, 
+	{"jpeg","image/jpeg"},
+	{"ico",	"image/ico"},
+	{"png", "image/png" },  
+	{"zip", "image/zip" },  
+	{"gz",  "image/gz"  },  
+	{"tar", "image/tar" },  
+	{"htm", "text/html" },  
+	{"html","text/html" },  
+	{"css",	"text/css"	}, 
+	{0,0} };
+
 
 int initializate_server(char* user, char* pass, int * port,char * path, char * default_file){
 	
@@ -45,15 +70,20 @@ int initializate_server(char* user, char* pass, int * port,char * path, char * d
 
 	/* close config file*/
 	fclose(server_cfg_file);
+
+#ifdef DEBUG
+	printf("config : %s %s %d %s %s \n ",user,pass,*port,path,default_file);
+#endif
+
 	return 0;
 }
 
 int main(){
 
-	char user[MAX_SIZE_BUFFER];
-	char pass[MAX_SIZE_BUFFER];
-	char path[MAX_SIZE_BUFFER];
-	char default_file[MAX_SIZE_BUFFER];
+	char user[MAX_SIZE_STR_LENGTH];
+	char pass[MAX_SIZE_STR_LENGTH];
+	char path[MAX_SIZE_STR_LENGTH];
+	char default_file[MAX_SIZE_STR_LENGTH];
 	int port;
 
 	initializate_server(user, pass, &port, path, default_file);
