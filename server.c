@@ -2,9 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+
+/*POSIX OS API, needed to reade and close sockets*/
+#include <unistd.h>
+
 #define MAXIMUM_NUMBER_OF_CONNECTIONS 64
 #define MAX_SIZE_BUFFER 255
 #define MAX_SIZE_STR_LENGTH 255
+#define BUFFER_SIZE 8096 
 
 //#define DEBUG
 
@@ -77,6 +82,40 @@ int initializate_server(char* user, char* pass, int * port,char * path, char * d
 
 	return 0;
 }
+
+void webserver(int socket)
+{
+	long i,ret;
+	static char buffer[BUFFER_SIZE+1]; 
+	
+	
+	/* read from socket into buffer  */
+	ret =read(socket,buffer,BUFFER_SIZE); 	/* read web request  */
+	if(ret == 0 || ret == -1) {	
+		printf("IO Read Error \n");
+		close(socket);
+	}
+	
+	if(ret > 0 && ret < BUFFER_SIZE)	/* return code is the valid characters */
+		buffer[ret]=0;		/* finish the buffer with a 0 */
+	else 
+		buffer[0]=0;
+	
+	for(i=0;i<ret;i++)	/* remove CF and LF characters */
+		if(buffer[i] == '\r' || buffer[i] == '\n')
+			buffer[i]='*';
+	
+#ifdef DEBUG
+	printf("check head of the buffer: \n %s \n",buffer);
+#endif
+
+	
+	//TODO: define a function that give us if is a get or a post, getMethod(buffer)
+
+	close(socket);
+}/*end webserver*/
+
+
 
 int main(){
 
